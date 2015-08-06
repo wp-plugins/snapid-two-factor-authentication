@@ -24,7 +24,6 @@ SnapID is a next-generation authentication system developed by TextPower using t
 Many websites/companies haven’t taken the appropriate steps to secure their environment because of the complications and expense associated with two-factor authentication. SnapID offers a way for companies of any size to implement authentication quickly and inexpensively.
 
 **SnapID eliminates:**
-
 - Usernames & Passwords (when there is nothing to steal, nothing can be stolen)
 - Need for a smartphone (any cell phone that can send a text message can be used with SnapID)
 - Significant up-front expense of other two-factor authentication systems
