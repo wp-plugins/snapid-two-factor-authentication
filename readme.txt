@@ -33,7 +33,7 @@ SnapID eliminates:
 - Lost or misplaced tokens or insufficient supply when needed
 - Learning curve for users
 
-[Check out how SnapID compares to other technologies](http://www.textpower.com/snapidpublic/wp-content/uploads/2015/06/snapid_compare.png)
+[Check out how SnapID compares to other technologies](http://www.snapid.co)
 
 SnapID and TextKey are trademarks of TextPower Inc. TextKey is a patented technology with U.S. Patent number 8,943,561.
 
