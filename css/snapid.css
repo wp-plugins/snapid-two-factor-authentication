@@ -1,0 +1,31 @@
+.snapid-alignright {
+    float: right;
+}
+
+.snapid-modal.modal {
+    width: 250px;
+}
+
+.snapid-modal p {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.snapid-modal h3 {
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+.snapid-modal h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #0897F1;
+}
+
+.snapid-message {
+    padding: 12px;
+    font-weight: bold;
+    background: #0897F1;
+    color: #fff;
+    margin: 0 -10px 15px;
+}

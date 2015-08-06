@@ -1,0 +1,43 @@
+.snapid-radio {
+	margin-right: 15px;
+}
+
+.snapid-form {
+	padding: 0 10px;
+}
+
+#snapid-example img {
+	margin: 15px auto 0;
+	width: 250px;
+	display: none;
+}
+
+#snapid-example img.snapid-selected {
+	display: block;
+}
+
+#snapid-next, #snapid-prev {
+	position: absolute;
+	top: 10px;
+}
+
+#snapid-prev {
+	left: 15px;
+}
+
+#snapid-next {
+	right: 15px;
+}
+
+.snapid-message-profile {
+	color: #0897F1;
+	font-weight: bold;
+	line-height: 18px;
+	display: none;
+}
+
+.spinner.snapid-spinner {
+	float: left;
+	display: none;
+	visibility: visible;
+}
