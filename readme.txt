@@ -18,12 +18,12 @@ Check out this 2 minute video showing how SnapID works.
 
 [vimeo https://vimeo.com/107771091]
 
-**What makes SnapID different from other authentication products?**
+= What makes SnapID different from other authentication products? =
 SnapID is a next-generation authentication system developed by TextPower using the patented TextKey technology. It replaces complex, costly and high-maintenance systems with a simple approach that leverages the power of advanced messaging technologies and a cellular phone’s “fingerprint.”
 
 Many websites/companies haven’t taken the appropriate steps to secure their environment because of the complications and expense associated with two-factor authentication. SnapID offers a way for companies of any size to implement authentication quickly and inexpensively.
 
-SnapID eliminates:
+**SnapID eliminates:**
 
 - Usernames & Passwords (when there is nothing to steal, nothing can be stolen)
 - Need for a smartphone (any cell phone that can send a text message can be used with SnapID)
