@@ -14,7 +14,9 @@ Make usernames and passwords obsolete. SnapID identifies and authenticates when 
 
 Check out this 2 minute video showing how SnapID works.
 
-[![Check out how SnapID works](http://www.textpower.com/public/wp-content/uploads/2015/07/snapid_video_WP_Readme.jpg)](https://vimeo.com/107771091 "Check out how SnapID works")
+[Check out how SnapID works](https://vimeo.com/107771091).
+
+https://vimeo.com/107771091
 
 **What makes SnapID different from other authentication products?**
 SnapID is a next-generation authentication system developed by TextPower using the patented TextKey technology. It replaces complex, costly and high-maintenance systems with a simple approach that leverages the power of advanced messaging technologies and a cellular phone’s “fingerprint.”
@@ -33,7 +35,7 @@ SnapID eliminates:
 - Lost or misplaced tokens or insufficient supply when needed
 - Learning curve for users
 
-[![SnapID comparison](http://www.textpower.com/snapidpublic/wp-content/uploads/2015/06/snapid_compare.png)]
+[[http://www.textpower.com/snapidpublic/wp-content/uploads/2015/06/snapid_compare.png|alt=SnapID comparison]]
 
 SnapID and TextKey are trademarks of TextPower Inc. TextKey is a patented technology with U.S. Patent number 8,943,561.
 
@@ -106,9 +108,9 @@ You can find the plugin at /wp-content/plugins/snapid. Once you delete the plugi
 
 == Screenshots ==
 
-1. The WordPress login page with SnapID
-2. SnapID mobile authentication dialogue
-3. SnapID settings page
+1. The WordPress login page with SnapID.
+2. SnapID mobile authentication dialogue.
+3. SnapID settings page.
 
 
 == Changelog ==
