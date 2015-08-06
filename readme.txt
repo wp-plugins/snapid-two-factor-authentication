@@ -14,9 +14,7 @@ Make usernames and passwords obsolete. SnapID identifies and authenticates when 
 
 Check out this 2 minute video showing how SnapID works.
 
-[Check out how SnapID works](https://vimeo.com/107771091).
-
-https://vimeo.com/107771091
+[vimeo https://vimeo.com/107771091]
 
 **What makes SnapID different from other authentication products?**
 SnapID is a next-generation authentication system developed by TextPower using the patented TextKey technology. It replaces complex, costly and high-maintenance systems with a simple approach that leverages the power of advanced messaging technologies and a cellular phone’s “fingerprint.”
