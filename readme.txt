@@ -14,6 +14,8 @@ Make usernames and passwords obsolete. SnapID identifies and authenticates when 
 
 Get the most secure & convenient two-factor authentication plugin for your WordPress website. With [SnapID](http://www.snapid.co) you will never have to remember your username and password ever again and be more secure than ever. All you need to do is send a simple text message to authenticate yourself.
 
+SnapID is currently in beta.
+
 Check out this 2 minute video showing how SnapID works.
 
 [vimeo https://vimeo.com/107771091]
