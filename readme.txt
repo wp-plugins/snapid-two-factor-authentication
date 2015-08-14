@@ -1,5 +1,5 @@
 	=== SnapID Two-Factor Authentication ===
-Contributors: TextPower
+Contributors: TextPower, mauteri
 Tags: two-factor, two-factor authentication, 2fa, snapid, multi-factor authentication, multi-factor, mfa, sms, security, strong authentication, two-step authentication, one-step authentication, textkey, textpower
 Requires at least: 3.7
 Tested up to: 4.2
