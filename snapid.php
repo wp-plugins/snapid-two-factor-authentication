@@ -3,14 +3,14 @@
  * Plugin Name: SnapID™ Two-Factor Authentication
  * Description: Get the most secure & convenient two-factor authentication plugin for your WordPress website. With SnapID™ you will never have to remember your username and password ever again and be more secure than ever.
  * Author: TextPower Inc.
- * Version: 1.0
+ * Version: 1.0.1
  * Author URI: http://www.textpower.com/
  */
 
 class WP_SnapID_Setup
 {
     private static $__instance = null;
-    public $version = '1.0';
+    public $version = '1.0.1';
     public $basename;
     public $Helper;
     private $SnapID;

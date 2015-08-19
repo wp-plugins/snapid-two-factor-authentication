@@ -2,7 +2,7 @@
 Contributors: TextPower, mauteri
 Tags: two-factor, two-factor authentication, 2fa, snapid, multi-factor authentication, multi-factor, mfa, sms, security, strong authentication, two-step authentication, one-step authentication, textkey, textpower
 Requires at least: 3.7
-Tested up to: 4.2
+Tested up to: 4.3
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -13,8 +13,6 @@ Make usernames and passwords obsolete. SnapID identifies and authenticates when 
 == Description ==
 
 Get the most secure & convenient two-factor authentication plugin for your WordPress website. With [SnapID](http://www.snapid.co) you will never have to remember your username and password ever again and be more secure than ever. All you need to do is send a simple text message to authenticate yourself.
-
-SnapID is currently in beta.
 
 Check out this 2 minute video showing how SnapID works.
 
@@ -116,6 +114,9 @@ You can find the plugin at /wp-content/plugins/snapid. Once you delete the plugi
 
 
 == Changelog ==
+
+= 1.0.1 =
+* Improvement: Limit SnapID to only run on admin and login pages
 
 = 1.0 =
 * Launched SnapID for WordPress

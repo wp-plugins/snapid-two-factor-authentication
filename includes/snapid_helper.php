@@ -16,6 +16,11 @@ class WP_SnapID_Helper
 		}
 	}
 
+	public function is_login_page()
+	{
+		return in_array( $GLOBALS['pagenow'], array( 'wp-login.php' ) );
+	}
+
 	public function get_actions_settings( $snapid )
 	{
 		if( $this->is_multi ) {
