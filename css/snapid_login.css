@@ -1,49 +1,49 @@
 .button-snapid {
-    height: 69px;
-    width: 300px;
-    margin: 0 auto;
-    display: block;
-    cursor: pointer;
-    border: none;
-    padding: 0;
-    background: url(../images/SnapID_button.png) left top;
+	height: 69px;
+	width: 300px;
+	margin: 0 auto;
+	display: block;
+	cursor: pointer;
+	border: none;
+	padding: 0;
+	background: url(../images/SnapID_button.png) left top;
 }
 
 .button-snapid:hover {
-    background-position: left bottom;
+	background-position: left bottom;
 }
 
 .snapid-or {
-    text-align: center;
-    margin: 10px auto;
+	text-align: center;
+	margin: 10px auto;
 }
 
 .snapid-two-step #loginform {
-    position: relative;
-    padding-bottom: 60px;
+	position: relative;
+	padding-bottom: 60px;
 }
 
 .snapid-protected {
-    position: absolute;
-    bottom: 0;
-    right: 0;
+	position: absolute;
+	bottom: 0;
+	right: 0;
 }
 
 .snapid-protected span {
-    float: left;
-    margin: 21px 1px 0;
-    font-size: 14px;
-    font-weight: bold;
+	float: left;
+	margin: 21px 1px 0;
+	font-size: 14px;
+	font-weight: bold;
 }
 
 .snapid-protected img {
-    margin: 10px 0 0;
+	margin: 10px 0 0;
 }
 
 #snapid-reset {
-    display: none;
+	display: none;
 }
 
 .snapid-modal p.snapid-small {
-    font-size: 12px;
+	font-size: 12px;
 }

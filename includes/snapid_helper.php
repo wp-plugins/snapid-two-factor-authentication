@@ -1,12 +1,19 @@
 <?php
 class WP_SnapID_Helper
 {
-
+	/**
+	 * Construct
+	 * @param boolean $is_multi
+	 */
 	public function __construct( $is_multi )
 	{
 		$this->is_multi = $is_multi;
 	}
 
+	/**
+	 * Helper for admin_menu
+	 * @param object $snapid
+	 */
 	public function admin_menu( $snapid )
 	{
 		if( $this->is_multi ) {
@@ -16,11 +23,20 @@ class WP_SnapID_Helper
 		}
 	}
 
+	/**
+	 * Check if the page is the login page
+	 * @return boolean
+	 */
 	public function is_login_page()
 	{
 		return in_array( $GLOBALS['pagenow'], array( 'wp-login.php' ) );
 	}
 
+	/**
+	 * Helper for settings and uninstall links
+	 * @param array $snapid
+	 * @return array
+	 */
 	public function get_actions_settings( $snapid )
 	{
 		if( $this->is_multi ) {
@@ -33,6 +49,9 @@ class WP_SnapID_Helper
 		return $snapid;
 	}
 
+	/**
+	 * Helper for settings fields
+	 */
 	public function settings_fields()
 	{
 		if( $this->is_multi ) {
@@ -42,11 +61,20 @@ class WP_SnapID_Helper
 		}
 	}
 
+	/**
+	 * Helper for get options
+	 * @param array $options
+	 * @return array
+	 */
 	public function get_options( $options )
 	{
 		return $this->is_multi ? get_site_option( $options ) : get_option( $options );
 	}
 
+	/**
+	 * Helper for get notice
+	 * @return mixed
+	 */
 	public function get_notice()
 	{
 		if( $this->is_multi && current_user_can( 'manage_network_options' ) ) {
@@ -57,6 +85,11 @@ class WP_SnapID_Helper
 		return false;
 	}
 
+	/**
+	 * Helper for register settings
+	 * @param object $snapid
+	 * @param array $options
+	 */
 	public function register_settings( $snapid, $options )
 	{
 		if( $this->is_multi ) {
@@ -68,6 +101,10 @@ class WP_SnapID_Helper
 		}
 	}
 
+	/**
+	 * Helper for delete options
+	 * @param array $options
+	 */
 	public function delete_options( $options )
 	{
 		if( $this->is_multi ) {
@@ -77,6 +114,11 @@ class WP_SnapID_Helper
 		}
 	}
 
+	/**
+	 * Helper for admin_url
+	 * @param string $url
+	 * @return string
+	 */
 	public function admin_url( $url )
 	{
 		return $this->is_multi ? network_admin_url( $url ) : admin_url( $url );

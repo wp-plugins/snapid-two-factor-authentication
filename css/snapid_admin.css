@@ -41,3 +41,10 @@
 	display: none;
 	visibility: visible;
 }
+
+.snapid-ease-red {
+	-moz-transition: color 1s ease;
+	-webkit-transition: color 1s ease;
+	transition: color 1s ease;
+	color: #f00;
+}

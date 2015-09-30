@@ -21,15 +21,17 @@ class WP_SnapID
 		'app_id' => '',
 		'app_sub_id' => '',
 		'terms_and_conditions' => false,
+		'version_saved' => '',
 	);
 
 	/**
 	 * Construct
 	 */
-	public function __construct( $basename, $helper )
+	public function __construct( $basename, $helper, $version )
 	{
 		$this->basename = $basename;
 		$this->Helper = $helper;
+		$this->Version = $version;
 
 		// Only run SnapID on login and admin pages.
 		if( is_admin() || $this->Helper->is_login_page() ) {
@@ -57,21 +59,28 @@ class WP_SnapID
 		$this->ApplicationID = $options['app_id'];
 		$this->ApplicationSubID = $options['app_sub_id'];
 		$this->TermsAndConditions = $options['terms_and_conditions'];
+		$this->VersionSaved = $options['version_saved'];
+
 
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'snapid_settings', array( $this, 'snapid_settings' ) );
 		add_action( 'snapid_uninstall', array( $this, 'snapid_uninstall' ) );
 
 		$this->SnapID = new SnapID( $this->CustomerID, $this->ApplicationID, $this->ApplicationSubID );
-		
+
 		// Let's check that the creditials entered are valid
 		$this->check = $this->SnapID->perform_join( '', '', '', '', '' );
 
-		if( $this->check->errordescr == '' && $this->TermsAndConditions ) {
+		if( $this->check->errordescr == '' && $this->TermsAndConditions && ( $this->OneStepEnabled || $this->TwoStepEnabled ) ) {
 			// All is good
+
+			// Check for updates plugin wants to make
+			$this->plugin_update( $options );
+
 			if( is_admin() ) {
 				add_action( 'snapid_profile', array( $this, 'add_profile_fields' ) );
 			}
+
 			add_action( 'wp_ajax_snapid_register', array( $this, 'ajax_register' ) );
 			add_action( 'wp_ajax_snapid_remove', array( $this, 'ajax_remove' ) );
 			add_action( 'wp_ajax_snapid_join_check', array( $this, 'ajax_join_check' ) );
@@ -105,6 +114,86 @@ class WP_SnapID
 	}
 
 	/**
+	 * Check for updates plugin requests to be made
+	 * @return void
+	 */
+	private function plugin_update( $options )
+	{
+		$update = false;
+
+		// 1.1 - SnapID user meta is now serialized
+		if( version_compare( $this->VersionSaved, '1.1', '<' ) ) {
+			$this->data_less_than_1_1();
+			$update = true;
+		}
+
+		if( $update ) {
+			$options['version_saved'] = sanitize_text_field( $this->Version );
+			update_option( $this->options, $options );
+		}
+	}
+
+	/**
+	 * Plugin data updates required for 1.1
+	 * User post meta is now serialized with credentials rather than a string of user proxy
+	 * @return void
+	 */
+	private function data_less_than_1_1()
+	{
+		$users = get_users(
+			array(
+				'meta_key' => '_snapid_user_proxy',
+			)
+		);
+		foreach( $users as $user ) {
+			$user_proxy = get_user_meta( $user->ID, '_snapid_user_proxy', true );
+			if( is_string( $user_proxy ) ) {
+				$meta = $this->set_user_meta_args( $user_proxy );
+				if( $meta ) {
+					update_user_meta( $user->ID, '_snapid_user_proxy', $meta );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Function to set the user meta args
+	 * @param string $user_proxy
+	 * @return array
+	 */
+	private function set_user_meta_args( $user_proxy )
+	{
+		if( !is_string( $user_proxy ) ) {
+			return false;
+		}
+		return array(
+				'user_proxy' => sanitize_text_field( $user_proxy ),
+				'customer_id' => sanitize_text_field( $this->CustomerID ),
+				'app_id' => sanitize_text_field( $this->ApplicationID ),
+				'app_sub_id' => sanitize_text_field( $this->ApplicationSubID )
+			);
+	}
+
+	/**
+	 * Get the right user proxy for the credentials. Returns user_proxy on match, false if no match
+	 * @param integer $user_id
+	 * @return mixed
+	 */
+	private function get_user_proxy( $user_id )
+	{
+		$metas = get_user_meta( $user_id, '_snapid_user_proxy', false );
+		if( empty( $metas ) || !is_array( $metas ) ) {
+			return false;
+		}
+		foreach( $metas as $meta ) {
+			if( $meta['customer_id'] === $this->CustomerID && $meta['app_id'] === $this->ApplicationID && $meta['app_sub_id'] === $this->ApplicationSubID ) {
+				return $meta['user_proxy'];
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Nag when setup is not configured or configured correctly
 	 * @action admin_notices
 	 * @return void
@@ -116,15 +205,22 @@ class WP_SnapID
 			if( empty( $this->CustomerID ) || empty( $this->ApplicationID ) ) {
 				$message = 'SnapID&trade; is not configured';
 			}
+
 			?>
-			<div class="update-nag">
-				<strong><?php echo esc_html( $message ); ?></strong>. Get your <a href="https://secure.textkey.com/snapid/siteregistration" target="_blank">SnapID&trade; credentials here</a> and then <a href="<?php echo admin_url( 'options-general.php?page=snapid' ); ?>">visit the settings page</a> to finish setup.
+			<div class="error">
+				<p><strong><?php echo esc_html( $message ); ?></strong>. Get your <a href="https://secure.textkey.com/snapid/siteregistration" target="_blank">SnapID&trade; credentials here</a> and then <a href="<?php echo admin_url( 'options-general.php?page=snapid' ); ?>">visit the settings page</a> to continue the setup.</p>
 			</div>
 			<?php
 		} else if( !$this->TermsAndConditions ) {
 			?>
-			<div class="update-nag">
-				<strong>Agreeing to SnapID's&trade; Terms and Conditions is required</strong>. Please <a href="<?php echo admin_url( 'options-general.php?page=snapid' ); ?>">visit the settings page</a> to finish setup.
+			<div class="error">
+				<p><strong>Agreeing to SnapID's&trade; Terms and Conditions is required</strong>. Please <a href="<?php echo admin_url( 'options-general.php?page=snapid' ); ?>">visit the settings page</a> to continue the setup.</p>
+			</div>
+			<?php
+		} else if( false === $this->OneStepEnabled && false === $this->TwoStepEnabled ) {
+			?>
+			<div class="error">
+				<p><strong>SnapID&trade; has no roles set for One-Step Login or Two-Step Login</strong>. Please <a href="<?php echo admin_url( 'options-general.php?page=snapid' ); ?>">visit the settings page</a> to continue the setup.</p>
 			</div>
 			<?php
 		}
@@ -139,19 +235,17 @@ class WP_SnapID
 	{
 		$current_user = wp_get_current_user();
 		$check = $this->check_user_role( $current_user->ID );
-		if( !$check || get_user_meta( $current_user->ID, '_snapid_user_proxy', true ) ) {
+		if( !$check || $this->get_user_proxy( $current_user->ID ) ) {
 			return;
 		}
 		if( $check == '2' ) {
-			$class = 'error';
 			$message = 'Your user is required to use <strong>SnapID&trade; Two-Step Login</strong>. Please <a href="' . admin_url( 'profile.php#snapid' ) . '">go to your profile</a> to complete the setup.';
 		} else if( $check == '1' ) {
-			$class = 'updated';
 			$message = 'Your user may use <strong>SnapID&trade; One-Step Login</strong>. Please <a href="' . admin_url( 'profile.php#snapid' ) . '">go to your profile</a> to complete the setup.';
 		} else {
 			return;
 		}
-		echo '<div class="' . $class . '"> <p>' . $message . '</p></div>';
+		echo '<div class="error"> <p>' . wp_kses_post( $message ) . '</p></div>';
 	}
 
 	/**
@@ -162,7 +256,7 @@ class WP_SnapID
 	public function ajax_two_step_check()
 	{
 		$user = get_user_by( 'login', $_POST['log'] );
-		if( $user && $test_user = wp_check_password( $_POST['pwd'], $user->data->user_pass, $user->ID ) && get_user_meta( $user->ID, '_snapid_user_proxy', true ) && $this->check_user_role( $user->ID ) == '2' ) {
+		if( $user && $test_user = wp_check_password( $_POST['pwd'], $user->data->user_pass, $user->ID ) && $this->get_user_proxy( $user->ID ) && $this->check_user_role( $user->ID ) == '2' ) {
 			wp_send_json_success();
 		}
 		wp_send_json_error();
@@ -207,7 +301,7 @@ class WP_SnapID
 
 	/**
 	 * Backend final authentication before granting access
-	 * @uses get_user_meta, sanitize_text_field, WP_Error
+	 * @uses sanitize_text_field, WP_Error
 	 * @return object
 	 */
 	public function two_step_authenticate( $user, $password )
@@ -217,7 +311,7 @@ class WP_SnapID
 			return $user;
 		}
 
-		$snapid_meta = get_user_meta( $user->ID, '_snapid_user_proxy', true );
+		$snapid_meta = $this->get_user_proxy( $user->ID );
 		$role = $this->check_user_role( $user->ID );
 
 		if( isset( $snapid_meta ) && !empty( $snapid_meta ) && $this->TwoStepEnabled && isset( $role ) && $role == '2' ) {
@@ -280,7 +374,7 @@ class WP_SnapID
 					<th scope="row"></th>
 					<td>
 						<label for="snapid-terms-and-conditions"><input type="checkbox" id="snapid-terms-and-conditions" name="<?php echo esc_attr( $this->options ); ?>[terms_and_conditions]" value="1" <?php checked( '1', $options['terms_and_conditions'] ); ?> /> By checking this box, you agree to SnapID's&trade; Terms and Conditions.</label>
-						
+
 						<p class="description">It is required that you read and agree to SnapID's&trade; <a href="https://secure.textkey.com/snapid/termsandconditions.php" target="_blank">Terms and Conditions</a>.</p>
 					</td>
 				</tr>
@@ -358,6 +452,8 @@ class WP_SnapID
 	 */
 	public function validate_options( $options )
 	{
+		global $wp_roles;
+
 		if( !isset( $_POST['_wpnonce'] ) ) {
 			wp_die( 'You cannot do this action' );
 		}
@@ -380,6 +476,28 @@ class WP_SnapID
 				}
 			}
 		}
+
+		// Check that roles were actually selected after enabling One-Step or Two-Step login.
+		// If not, set the One-Step or Two-Step back to disabled.
+		$role_call = array();
+		foreach( $wp_roles->get_names() as $role ) {
+			$role_name = strtolower( before_last_bar( $role ) );
+			if( isset( $options_validated[$role_name] ) ) {
+				$role_call[] = $options_validated[$role_name];
+			}
+		}
+		if( empty( $role_call ) ) {
+			$options_validated['one_step_enabled'] = false;
+			$options_validated['two_step_enabled'] = false;
+		} else {
+			if( false === array_search( 1, $role_call ) ) {
+				$options_validated['one_step_enabled'] = false;
+			}
+			if( false === array_search( 2, $role_call ) ) {
+				$options_validated['two_step_enabled'] = false;
+			}
+		}
+
 		if( is_multisite() ) {
 			update_site_option( $this->options, $options_validated );
 			wp_safe_redirect( add_query_arg( array( 'page' => 'snapid', 'updated' => 'true' ), network_admin_url( 'settings.php' ) ) );
@@ -390,7 +508,7 @@ class WP_SnapID
 
 	/**
 	 * Uninstall and deactivates SnapID
-	 * @uses current_user_can, wp_verify_nonce, delete_option, get_users, get_user_meta, delete_user_meta
+	 * @uses current_user_can, wp_verify_nonce, delete_option, get_users, delete_user_meta
 	 * @return void
 	 */
 	public function uninstall()
@@ -398,7 +516,7 @@ class WP_SnapID
 		if( !isset( $_POST['_wpnonce'] ) ) {
 			wp_die( 'You cannot do this action' );
 		}
-		
+
 		if( is_multisite() ) {
 			if ( !current_user_can( 'manage_network_options' ) || !wp_verify_nonce( $_POST['_wpnonce'], 'snapid-uninstall' ) ) {
 				wp_die( 'You cannot do this action' );
@@ -409,24 +527,32 @@ class WP_SnapID
 				wp_die( 'You cannot do this action' );
 			}
 		}
-		
+
 		if( isset( $_POST['snapid-delete-settings'] ) ) {
-			$this->Helper->delete_options( $this->options);
+			$this->Helper->delete_options( $this->options );
 		}
-		
+
 		if( isset( $_POST['snapid-delete-users'] ) ) {
-			$users = get_users();
+			$users = get_users(
+				array(
+					'meta_key' => '_snapid_user_proxy',
+				)
+			);
 			foreach( $users as $user ) {
-				$snapid_user = get_user_meta( $user->ID, '_snapid_user_proxy', true );
-				if( !empty( $snapid_user ) ) {
-				   $this->SnapID->perform_remove( $snapid_user );
-				   delete_user_meta( $user->ID, '_snapid_user_proxy', $snapid_user );
+				$metas = get_user_meta( $user->ID, '_snapid_user_proxy', false );
+				if( empty( $metas ) ) {
+					continue;
+				}
+				foreach( $metas as $meta ) {
+					$snapid = new SnapID( $meta['customer_id'], $meta['app_id'], $meta['app_sub_id'] );
+					$snapid->perform_remove( $meta['user_proxy'] );
+					delete_user_meta( $user->ID, '_snapid_user_proxy', $meta );
 				}
 			}
 		}
-		
+
 		deactivate_plugins( $this->basename );
-		
+
 		wp_safe_redirect( add_query_arg( array( 'deactivate' => 'true' ), $this->Helper->admin_url( 'plugins.php' ) ) );
 		exit();
 	}
@@ -439,7 +565,6 @@ class WP_SnapID
 	{
 		global $user_id;
 		$role = $this->check_user_role( $user_id );
-		// remove $data = $this->SnapID->perform_join('', '', '', '', '');
 		switch( $role ) {
 			case '1':
 				$role_type = 'One-Step';
@@ -482,7 +607,7 @@ class WP_SnapID
 					<br /></br />
 					<div class="snapid-message-profile">
 					</div>
-					<?php $snapid_user = get_user_meta( $user_id, '_snapid_user_proxy', true ) ? true : false; ?>
+					<?php $snapid_user = $this->get_user_proxy( $user_id ); ?>
 					<div class="snapid-toggle" style="display: <?php echo $snapid_user ? 'none' : 'block' ?>;">
 						<div class="spinner snapid-spinner"></div>
 						<p><strong>This WordPress user is not using SnapID&trade;.</strong></p>
@@ -568,14 +693,31 @@ class WP_SnapID
 	 */
 	public function snapid_login_user( $user_data, $response )
 	{
+		//$meta = $this->set_user_meta_args( $user_data->userproxy );
+		//$meta = "'" . serialize( $meta ) . "'";
 		$args = array(
 			'meta_key' => '_snapid_user_proxy',
-			'meta_value' => $user_data->userproxy,
-			'number' => 1
+			'meta_query' => array(
+				'key' => '_snapid_user_proxy',
+				'value' => '"' . $user_data->userproxy . '"',
+				'compare' => 'LIKE',
+			),
+			'number' => 1,
 		);
 		$get_users = get_users( $args );
+		if( !$get_users ) {
+			$response->errordescr = 'Sorry, something went wrong...';
+			wp_send_json_success( $response );
+		}
 		$get_user = $get_users[0];
 		$user_id = intval( $get_user->ID );
+
+		// Check that user_proxy is also part of this application setup for this user.
+		$check_user_proxy = $this->get_user_proxy( $user_id );
+		if( $check_user_proxy !== $user_data->userproxy ) {
+			$response->errordescr = 'Sorry, something went wrong...';
+			wp_send_json_success( $response );
+		}
 
 		// Check that this user's role can use One-Step Login
 		$role = $this->check_user_role( $user_id );
@@ -591,7 +733,7 @@ class WP_SnapID
 		if( $user && $role == '1') {
 			wp_set_current_user( $user_id, $user->user_login );
 			wp_set_auth_cookie( $user_id );
-			do_action( 'wp_login', $user->user_login );
+			do_action( 'wp_login', $user->user_login, $user );
 		}
 		return true;
 	}
@@ -619,9 +761,9 @@ class WP_SnapID
 		if( $current_user->ID != $user_id && !current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( array( 'errordescr' => 'You do not have permission to do this.' ) );
 		}
-		
+
 		$response = $this->SnapID->perform_join( '', '', '', $user_email, '' );
-		
+
 		if( !$response ) {
 			wp_send_json_error( array( 'errordescr' => 'Sorry, something went wrong...' ) );
 		}
@@ -673,7 +815,7 @@ class WP_SnapID
 		if( !$user_id || intval( $user_id ) == 0 ) {
 			return array( 'errordescr' => 'This is not a valid user' );
 		}
-		$snapid_user = get_user_meta( $user_id, '_snapid_user_proxy', true );
+		$snapid_user = $this->get_user_proxy( $user_id );
 		if( !$snapid_user ) {
 			return array( 'errordescr' => 'This user is not set up with SnapID&trade;' );
 		}
@@ -681,7 +823,8 @@ class WP_SnapID
 		if( !$response || ( isset( $response->errorDesc ) && !empty( $response->errorDesc ) ) ) {
 			return array( 'errordescr' => 'This user is not set up with SnapID&trade;' );
 		} else {
-			delete_user_meta( $user_id, '_snapid_user_proxy', $snapid_user );
+			$meta = $this->set_user_meta_args( $snapid_user );
+			delete_user_meta( $user_id, '_snapid_user_proxy', $meta );
 			return $response;
 		}
 	}
@@ -708,7 +851,7 @@ class WP_SnapID
 
 		$loginaccessidentifier = $response->loginaccessidentifier ?: null;
 		$snapidkey = $response->snapidkey ?: null;
-		$keycheckid = $response->keycheckid ?: null;        
+		$keycheckid = $response->keycheckid ?: null;
 
 		$_SESSION['snapid_login'] = array(
 			'loginaccessidentifier' => $loginaccessidentifier,
@@ -721,7 +864,7 @@ class WP_SnapID
 	}
 
 	/**
-	 * Ajax check for register 
+	 * Ajax check for register
 	 * @action wp_ajax_snapid_keyid_check, wp_ajax_nopriv_snapid_keyid_check
 	 * @return json
 	 */
@@ -757,7 +900,8 @@ class WP_SnapID
 			if( $user_data->userwasalreadyjoined ) {
 				// Check the site for an actual user using the userproxy.
 				// If no one is using it, we can register the device for this site.
-				$args = array( 'number' => 1, 'meta_key' => '_snapid_user_proxy', 'meta_value' => $user_data->userproxy );
+				$meta = $this->set_user_meta_args( $user_data->userproxy );
+				$args = array( 'number' => 1, 'meta_key' => '_snapid_user_proxy', 'meta_value' => $meta );
 				$user_query = new WP_User_Query( $args );
 				$results = $user_query->get_results();
 				if( !empty( $results ) ) {
@@ -766,7 +910,8 @@ class WP_SnapID
 				}
 			}
 			if( $user_id && $user_data && $user_data->errordescr == '' ) {
-				$snapid_meta = add_user_meta( $user_id, '_snapid_user_proxy', sanitize_text_field( $user_data->userproxy ), true );
+				$meta = $this->set_user_meta_args( $user_data->userproxy );
+				$snapid_meta = add_user_meta( $user_id, '_snapid_user_proxy', $meta, false );
 				if( $snapid_meta ) {
 					$response->errordescr = 'Account successfully linked to SnapID&trade;.';
 					wp_send_json_success( $response );
