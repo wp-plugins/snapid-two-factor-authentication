@@ -12,16 +12,18 @@ Make usernames and passwords obsolete. SnapID identifies and authenticates when 
 
 == Description ==
 
+Get the most secure & convenient two-factor authentication plugin for your WordPress website. With [SnapID](http://www.snapid.co) you will never have to remember your username and password ever again and be more secure than ever. All you need to do is send a simple text message to authenticate yourself.
+
 Check out this 2 minute video showing how SnapID works.
 
-[![Check out how SnapID works](http://www.textpower.com/public/wp-content/uploads/2015/07/snapid_video_WP_Readme.jpg)](https://vimeo.com/107771091 "Check out how SnapID works")
+[vimeo https://vimeo.com/107771091]
 
-**What makes SnapID different from other authentication products?**
+= What makes SnapID different from other authentication products? =
 SnapID is a next-generation authentication system developed by TextPower using the patented TextKey technology. It replaces complex, costly and high-maintenance systems with a simple approach that leverages the power of advanced messaging technologies and a cellular phone’s “fingerprint.”
 
 Many websites/companies haven’t taken the appropriate steps to secure their environment because of the complications and expense associated with two-factor authentication. SnapID offers a way for companies of any size to implement authentication quickly and inexpensively.
 
-SnapID eliminates:
+**SnapID eliminates:**
 
 - Usernames & Passwords (when there is nothing to steal, nothing can be stolen)
 - Need for a smartphone (any cell phone that can send a text message can be used with SnapID)
@@ -33,7 +35,7 @@ SnapID eliminates:
 - Lost or misplaced tokens or insufficient supply when needed
 - Learning curve for users
 
-[![SnapID comparison](http://www.textpower.com/snapidpublic/wp-content/uploads/2015/06/snapid_compare.png)]
+[Check out how SnapID compares to other technologies](http://www.textpower.com/snapidpublic/wp-content/uploads/2015/06/snapid_compare.png)
 
 SnapID and TextKey are trademarks of TextPower Inc. TextKey is a patented technology with U.S. Patent number 8,943,561.
 
@@ -43,7 +45,7 @@ SnapID and TextKey are trademarks of TextPower Inc. TextKey is a patented techno
 SnapID WordPress Plugin installation takes on average just 5 minutes.
 
 1. Login to your WordPress account and go to your **Plugins page**.
-2. Click on **Add New** and search for **SnapID**.
+2. Click on **Add New** and search for **SnapID**. 
 3. **Download** the SnapID plugin and **Activate** it.
 4. Follow further setup instructions
 
@@ -66,16 +68,16 @@ It’s very simple. Provide [these instructions](https://snapid.zendesk.com/hc/e
 = Is SnapID available outside US? =
 You can use SnapID internationally if you have a Google Voice number. You'll send a text message using the Google Voice website instead of your phone. These numbers are free and take just a few minutes to set up. If you travel internationally often, we suggest you use a Google Voice Number with SnapID instead of your regular phone number.
 
-If you're a website admin and would like to allow international users to login with SnapID from mobile phones that don't have US numbers please contact us directly for details.
+If you're a website admin and would like to allow international users to login with SnapID from mobile phones that don't have US numbers please contact us directly for details. 
 
 = How much does SnapID cost? =
-SnapID is free for all websites that use our *plug-n-play* softwares/plugins. If you require additional security features, analytics and premium support, please contact us at sales@textpower.com to get started.
+SnapID is free for all websites that use our *plug-n-play* softwares/plugins. If you require additional security features, analytics and premium support, please contact us at sales@textpower.com to get started. 
 
 = I changed my phone number. What happens now? =
 Follow the instructions here: https://snapid.zendesk.com/hc/en-us/articles/205910198-I-changed-my-phone-number-What-happens-now-
 
 = Is my account protected if I lose my phone? =
-If you lose or misplace your phone, you are still protected with multiple layers of protection:
+If you lose or misplace your phone, you are still protected with multiple layers of protection:  
 
 **PIN**: When setting up a SnapID account you can choose to activate a PIN that will have to be placed before (prepended) or after (appended) the one-time-password (OTP) that you will text to login to your website.  Anyone other than you who has your phone wouldn't know the PIN and wouldn't know whether it had to be placed before or after the OTP.  It'll never appear on the screen and therefore anyone else with the phone wouldn't know what it was, that it had to be sent along with the OTP or what position it had to be in.
 
@@ -86,10 +88,10 @@ If you lose or misplace your phone, you are still protected with multiple layers
 **Phone Lock**: Unlike traditional SMS two-factor authentication systems where any text received can be previewed on the lock screen, SnapID cannot be used when your phone is locked because you must send the text, which requires that the phone to be unlocked. This makes SnapID significantly more secure than ANY SMS-based system where the user receives a text message instead of sends one
 
 = What do I do if I lose my phone? =
-You are protected! Follow the instructions here: https://snapid.zendesk.com/hc/en-us/articles/206082228
+You are protected! Follow the instructions here: https://snapid.zendesk.com/hc/en-us/articles/206082228  
 
 = I own or manage multiple WordPress sites. Are there any limits to how many sites I can register? =
-Currently you can register up to 5 websites for each unique phone number. To register a website, [please go here](https://secure.textkey.com/snapid/siteregistration/) and follow instructions.
+Currently you can register up to 5 websites for each unique phone number. To register a website, [please go here](https://secure.textkey.com/snapid/siteregistration/) and follow instructions.  
 
 = How do I find out my SnapID registration status? =
 You can text MySnapID to 48510 and it will tell you if you are registered with SnapID or not. If you are registered, you will be told how many applications/websites are linked to your SnapID account. This information is sent to both your registered email and as a reply to your text.
@@ -98,7 +100,7 @@ You can text MySnapID to 48510 and it will tell you if you are registered with S
 Use one of the below methods to delete the SnapID WordPress plugin from your website:
 
 - Control panel provided by your web hosting company
-- FTP
+- FTP 
 - SSH access
 
 You can find the plugin at /wp-content/plugins/snapid. Once you delete the plugin, regular username/password access will be restored immediately. If you don't have access to your WordPress site using one of the above means, please contact support @ your web hosting company and ask them to delete this folder.
@@ -106,9 +108,9 @@ You can find the plugin at /wp-content/plugins/snapid. Once you delete the plugi
 
 == Screenshots ==
 
-1. The WordPress login page with SnapID
-2. SnapID mobile authentication dialogue
-3. SnapID settings page
+1. The WordPress login page with SnapID.
+2. SnapID mobile authentication dialogue.
+3. SnapID settings page.
 
 
 == Changelog ==
